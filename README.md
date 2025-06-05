@@ -3,6 +3,7 @@
 A pure Rust implementation of the PKWare Data Compression Library (DCL), providing high-performance compression and decompression compatible with the original PKLib by Ladislav Zezula.
 
 [![Crates.io](https://img.shields.io/crates/v/pklib.svg)](https://crates.io/crates/pklib)
+[![Build Status](https://github.com/danielsreichenbach/pklib-rs/workflows/CI/badge.svg)](https://github.com/danielsreichenbach/pklib-rs/actions/workflows/ci.yml)
 [![Documentation](https://docs.rs/pklib/badge.svg)](https://docs.rs/pklib)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
