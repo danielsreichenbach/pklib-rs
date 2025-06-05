@@ -83,7 +83,7 @@ pub mod writer {
             }
 
             // Write header
-            let header = [self.mode as u8, self.dict_size.bits() as u8];
+            let header = [self.mode as u8, self.dict_size.bits()];
             self.writer.write_all(&header).await?;
 
             self.initialized = true;

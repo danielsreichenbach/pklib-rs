@@ -58,10 +58,7 @@ fn async_io_overlap_benchmark(c: &mut Criterion) {
                 )
                 .expect("Compression failed");
 
-                let decompressed =
-                    pklib::explode_bytes(black_box(&compressed)).expect("Decompression failed");
-
-                decompressed
+                pklib::explode_bytes(black_box(&compressed)).expect("Decompression failed")
             });
         });
 
@@ -168,9 +165,8 @@ fn async_batch_processing_benchmark(c: &mut Criterion) {
                         let _processor = AsyncBatchProcessor::new().with_concurrency(*concurrency);
 
                         // Simulate concurrent processing by processing chunks
-                        let chunks: Vec<_> = files
-                            .chunks((files.len() + concurrency - 1) / concurrency)
-                            .collect();
+                        let chunks: Vec<_> =
+                            files.chunks(files.len().div_ceil(*concurrency)).collect();
                         let mut all_results = Vec::new();
 
                         for chunk in chunks {
@@ -222,13 +218,12 @@ fn async_memory_efficiency_benchmark(c: &mut Criterion) {
         b.iter(|| {
             // Load entire file into memory (current approach for large files)
             let input_copy = data.clone(); // Simulate loading entire file
-            let compressed = pklib::implode_bytes(
+            pklib::implode_bytes(
                 black_box(&input_copy),
                 CompressionMode::Binary,
                 DictionarySize::Size4K,
             )
-            .expect("Compression failed");
-            compressed
+            .expect("Compression failed")
         });
     });
 
