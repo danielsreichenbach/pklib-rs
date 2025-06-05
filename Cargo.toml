@@ -2,7 +2,7 @@
 name = "pklib"
 version = "0.1.0"
 edition = "2021"
-authors = ["PKLib Rust Contributors"]
+authors = ["Daniel S. Reichenbach <daniel@kogito.network>"]
 description = "Pure Rust implementation of PKWare Data Compression Library (DCL) with full PKLib compatibility"
 license = "MIT"
 repository = "https://github.com/danielsreichenbach/pklib-rs"
