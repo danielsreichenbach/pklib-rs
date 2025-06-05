@@ -1,0 +1,10 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 9d3cc613bc3692c106ab617a96a9927b81f0136577f968d23dcb0a153d36f864 # shrinks to byte_value = 0, size = 11
+cc f9a1bc5cde1fd316e0b69ece10482d97365df90eace404fa2b9badbc4f306a6c # shrinks to pattern = [0], repeat_count = 2
+cc 2c47a202cbc37eed40d5aa2fd56bf47ee0016244413a17024a472abefd3f6534 # shrinks to data = [125, 125, 144, 125, 224, 96, 224, 1, 125, 230, 1, 128, 128, 129, 128, 125, 125, 125, 125, 1, 129, 129, 125, 128, 130, 0, 125, 234, 1, 126, 128, 126, 129, 130, 123, 125, 129, 131, 128, 1, 130, 94, 125, 130, 128, 131, 96, 128, 2, 128, 106, 88, 1, 131, 234, 128, 3, 0, 0, 1, 132, 90, 125, 2, 224, 125, 3, 128, 14, 128, 15, 128, 96, 125, 131, 224, 128, 132, 128, 4, 1, 133, 125, 132, 125, 4, 59, 122, 125, 86, 224, 132, 146, 2, 127, 179, 180, 154, 230, 190, 241, 3, 219, 125, 169, 16, 162, 217, 137, 217, 6, 106, 199, 128, 74, 255, 175, 250, 106, 5, 200, 187, 161, 235, 131, 142, 165, 157, 224, 169, 156, 222, 26, 153, 147, 254, 63, 94, 189, 134, 131, 254, 122, 180]
+cc 6109b6290dd45db7eecfb359d23032273b71c6267b3f0b5688a0a2e89cfe721d # shrinks to pattern = [125], repeat_count = 26
