@@ -4,6 +4,7 @@
 //! processing large files with controlled memory usage.
 
 #[cfg(feature = "async")]
+/// Memory-efficient streaming with controlled memory usage and backpressure
 pub mod processor {
     use crate::{CompressionMode, CompressionStats, DictionarySize, Result};
     use tokio::io::{AsyncRead, AsyncWrite, BufReader};

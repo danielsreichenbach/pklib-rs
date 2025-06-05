@@ -4,6 +4,7 @@
 //! pipelined operations for improved performance.
 
 #[cfg(feature = "async")]
+/// Async streaming compression with pipelined operations
 pub mod writer {
     use crate::implode::ImplodeState;
     use crate::{CompressionMode, DictionarySize, PkLibError, Result};

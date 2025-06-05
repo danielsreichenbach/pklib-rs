@@ -6,7 +6,7 @@
 #![cfg(feature = "async")]
 
 use criterion::{criterion_group, criterion_main, BenchmarkId, Criterion, Throughput};
-use futures::StreamExt;
+use futures::TryStreamExt;
 use pklib::{
     AsyncBatchProcessor, AsyncExplodeReader, AsyncImplodeWriter, AsyncStreamProcessor,
     CompressionMode, DictionarySize, StreamOptions,
@@ -69,37 +69,39 @@ fn async_io_overlap_benchmark(c: &mut Criterion) {
         let async_id = BenchmarkId::from_parameter(format!("{}_async_overlap", size_label));
         group.throughput(Throughput::Bytes(*size as u64));
         group.bench_with_input(async_id, &data, |b, data| {
-            b.to_async(&rt).iter(|| async {
-                // Async compression with streaming
-                let cursor = Cursor::new(data);
-                let mut output = Vec::new();
-                let mut writer = AsyncImplodeWriter::new(
-                    &mut output,
-                    CompressionMode::Binary,
-                    DictionarySize::Size4K,
-                )
-                .expect("Writer creation failed");
+            b.iter(|| {
+                rt.block_on(async {
+                    // Async compression with streaming
+                    let _cursor = Cursor::new(data);
+                    let mut output = Vec::new();
+                    let mut writer = AsyncImplodeWriter::new(
+                        &mut output,
+                        CompressionMode::Binary,
+                        DictionarySize::Size4K,
+                    )
+                    .expect("Writer creation failed");
 
-                // Process in chunks to demonstrate overlap potential
-                for chunk in data.chunks(65536) {
-                    writer
-                        .write_chunk(black_box(chunk))
-                        .await
-                        .expect("Write failed");
-                }
-                writer.finish().await.expect("Finish failed");
+                    // Process in chunks to demonstrate overlap potential
+                    for chunk in data.chunks(65536) {
+                        writer
+                            .write_chunk(black_box(chunk))
+                            .await
+                            .expect("Write failed");
+                    }
+                    writer.finish().await.expect("Finish failed");
 
-                // Async decompression
-                let compressed_cursor = Cursor::new(&output);
-                let mut reader =
-                    AsyncExplodeReader::new(compressed_cursor).expect("Reader creation failed");
+                    // Async decompression
+                    let compressed_cursor = Cursor::new(&output);
+                    let mut reader =
+                        AsyncExplodeReader::new(compressed_cursor).expect("Reader creation failed");
 
-                let mut decompressed = Vec::new();
-                while let Some(chunk) = reader.try_next().await.transpose().expect("Read failed") {
-                    decompressed.extend_from_slice(&chunk);
-                }
+                    let mut decompressed = Vec::new();
+                    while let Ok(Some(chunk)) = reader.try_next().await {
+                        decompressed.extend_from_slice(&chunk);
+                    }
 
-                decompressed
+                    decompressed
+                })
             });
         });
     }
@@ -160,38 +162,40 @@ fn async_batch_processing_benchmark(c: &mut Criterion) {
             ));
             group.throughput(Throughput::Bytes(total_size as u64));
             group.bench_with_input(async_id, &files, |b, files| {
-                b.to_async(&rt).iter(|| async {
-                    // Create file paths for testing (in-memory simulation)
-                    let processor = AsyncBatchProcessor::new().with_concurrency(*concurrency);
+                b.iter(|| {
+                    rt.block_on(async {
+                        // Create file paths for testing (in-memory simulation)
+                        let _processor = AsyncBatchProcessor::new().with_concurrency(*concurrency);
 
-                    // Simulate concurrent processing by processing chunks
-                    let chunks: Vec<_> = files
-                        .chunks((files.len() + concurrency - 1) / concurrency)
-                        .collect();
-                    let mut all_results = Vec::new();
+                        // Simulate concurrent processing by processing chunks
+                        let chunks: Vec<_> = files
+                            .chunks((files.len() + concurrency - 1) / concurrency)
+                            .collect();
+                        let mut all_results = Vec::new();
 
-                    for chunk in chunks {
-                        let mut chunk_results = Vec::new();
-                        for file in chunk {
-                            // Simulate async compression
-                            let mut output = Vec::new();
-                            let mut writer = AsyncImplodeWriter::new(
-                                &mut output,
-                                CompressionMode::Binary,
-                                DictionarySize::Size4K,
-                            )
-                            .expect("Writer creation failed");
+                        for chunk in chunks {
+                            let mut chunk_results = Vec::new();
+                            for file in chunk {
+                                // Simulate async compression
+                                let mut output = Vec::new();
+                                let mut writer = AsyncImplodeWriter::new(
+                                    &mut output,
+                                    CompressionMode::Binary,
+                                    DictionarySize::Size4K,
+                                )
+                                .expect("Writer creation failed");
 
-                            writer
-                                .write_chunk(black_box(file))
-                                .await
-                                .expect("Write failed");
-                            writer.finish().await.expect("Finish failed");
-                            chunk_results.push(output);
+                                writer
+                                    .write_chunk(black_box(file))
+                                    .await
+                                    .expect("Write failed");
+                                writer.finish().await.expect("Finish failed");
+                                chunk_results.push(output);
+                            }
+                            all_results.extend(chunk_results);
                         }
-                        all_results.extend(chunk_results);
-                    }
-                    all_results
+                        all_results
+                    })
                 });
             });
         }
@@ -241,27 +245,29 @@ fn async_memory_efficiency_benchmark(c: &mut Criterion) {
             BenchmarkId::from_parameter(format!("10MB_streaming_{}_chunks", chunk_label));
         group.throughput(Throughput::Bytes(file_size as u64));
         group.bench_with_input(streaming_id, &data, |b, data| {
-            b.to_async(&rt).iter(|| async {
-                // Process file in chunks (streaming approach)
-                let mut output = Vec::new();
-                let mut writer = AsyncImplodeWriter::with_buffer_size(
-                    &mut output,
-                    CompressionMode::Binary,
-                    DictionarySize::Size4K,
-                    *chunk_size,
-                )
-                .expect("Writer creation failed");
+            b.iter(|| {
+                rt.block_on(async {
+                    // Process file in chunks (streaming approach)
+                    let mut output = Vec::new();
+                    let mut writer = AsyncImplodeWriter::with_buffer_size(
+                        &mut output,
+                        CompressionMode::Binary,
+                        DictionarySize::Size4K,
+                        *chunk_size,
+                    )
+                    .expect("Writer creation failed");
 
-                for chunk in data.chunks(*chunk_size) {
-                    // Only keep one chunk in memory at a time
-                    writer
-                        .write_chunk(black_box(chunk))
-                        .await
-                        .expect("Write failed");
-                    // Previous chunks can be deallocated
-                }
-                writer.finish().await.expect("Finish failed");
-                output
+                    for chunk in data.chunks(*chunk_size) {
+                        // Only keep one chunk in memory at a time
+                        writer
+                            .write_chunk(black_box(chunk))
+                            .await
+                            .expect("Write failed");
+                        // Previous chunks can be deallocated
+                    }
+                    writer.finish().await.expect("Finish failed");
+                    output
+                })
             });
         });
     }
@@ -297,21 +303,23 @@ fn async_stream_processing_benchmark(c: &mut Criterion) {
     let stream_id = BenchmarkId::from_parameter("5MB_stream_processor");
     group.throughput(Throughput::Bytes(file_size as u64));
     group.bench_with_input(stream_id, &data, |b, data| {
-        b.to_async(&rt).iter(|| async {
-            let input = Cursor::new(data);
-            let mut output = Vec::new();
+        b.iter(|| {
+            rt.block_on(async {
+                let input = Cursor::new(data);
+                let mut output = Vec::new();
 
-            let _stats = AsyncStreamProcessor::process_stream(
-                input,
-                &mut output,
-                CompressionMode::Binary,
-                DictionarySize::Size4K,
-                StreamOptions::default(),
-            )
-            .await
-            .expect("Stream processing failed");
+                let _stats = AsyncStreamProcessor::process_stream(
+                    input,
+                    &mut output,
+                    CompressionMode::Binary,
+                    DictionarySize::Size4K,
+                    StreamOptions::default(),
+                )
+                .await
+                .expect("Stream processing failed");
 
-            output
+                output
+            })
         });
     });
 
@@ -340,29 +348,31 @@ fn async_backpressure_benchmark(c: &mut Criterion) {
         let backpressure_id = BenchmarkId::from_parameter(format!("20MB_file_{}", limit_label));
         group.throughput(Throughput::Bytes(file_size as u64));
         group.bench_with_input(backpressure_id, &data, |b, data| {
-            b.to_async(&rt).iter(|| async {
-                // Use StreamOptions to control memory usage
-                let options = StreamOptions {
-                    chunk_size: memory_limit / 4, // Use 1/4 of limit per chunk
-                    buffer_count: 2,              // Minimize buffers
-                    memory_limit: *memory_limit,
-                    show_progress: false,
-                };
+            b.iter(|| {
+                rt.block_on(async {
+                    // Use StreamOptions to control memory usage
+                    let options = StreamOptions {
+                        chunk_size: memory_limit / 4, // Use 1/4 of limit per chunk
+                        buffer_count: 2,              // Minimize buffers
+                        memory_limit: *memory_limit,
+                        show_progress: false,
+                    };
 
-                let input = Cursor::new(data);
-                let mut output = Vec::new();
+                    let input = Cursor::new(data);
+                    let mut output = Vec::new();
 
-                let _stats = AsyncStreamProcessor::process_stream(
-                    input,
-                    &mut output,
-                    CompressionMode::Binary,
-                    DictionarySize::Size4K,
-                    options,
-                )
-                .await
-                .expect("Stream processing failed");
+                    let _stats = AsyncStreamProcessor::process_stream(
+                        input,
+                        &mut output,
+                        CompressionMode::Binary,
+                        DictionarySize::Size4K,
+                        options,
+                    )
+                    .await
+                    .expect("Stream processing failed");
 
-                output
+                    output
+                })
             });
         });
     }

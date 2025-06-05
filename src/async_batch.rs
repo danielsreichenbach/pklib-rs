@@ -4,6 +4,7 @@
 //! high-throughput batch operations.
 
 #[cfg(feature = "async")]
+/// Concurrent file processing with configurable concurrency and memory limits
 pub mod processor {
     use crate::{CompressionMode, CompressionStats, DictionarySize, Result};
     use futures::stream::{self, StreamExt, TryStreamExt};

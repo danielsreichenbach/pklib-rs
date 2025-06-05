@@ -4,6 +4,7 @@
 //! and decompression operations.
 
 #[cfg(feature = "async")]
+/// High-level async convenience functions for common compression operations
 pub mod functions {
     use crate::{CompressionMode, CompressionStats, DictionarySize, Result};
     use bytes::Bytes;

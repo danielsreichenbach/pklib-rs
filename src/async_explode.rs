@@ -4,6 +4,7 @@
 //! overlapped I/O operations for improved performance.
 
 #[cfg(feature = "async")]
+/// Async streaming decompression with overlapped I/O operations
 pub mod reader {
     use crate::explode::ExplodeState;
     use crate::{CompressionMode, PkLibError, Result};
