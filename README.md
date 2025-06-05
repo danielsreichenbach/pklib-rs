@@ -243,8 +243,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [PKLib Reference Implementation](https://codeberg.org/implode-compression-impls/pklib)
 - [PKWare DCL Format Documentation](https://wiki.multimedia.cx/index.php/PKWare_DCL)
-- [Implementation Plan](PKLIB_IMPLEMENTATION_PLAN.md)
 
 ---
 
-**Status**: All 4 implementation phases are complete! PKLib provides a fully functional, production-ready implementation of the PKWare DCL format with comprehensive testing and validation. See [PKLIB_IMPLEMENTATION_PLAN.md](PKLIB_IMPLEMENTATION_PLAN.md) for detailed implementation notes.
+**Status**: All 4 implementation phases are complete! PKLib provides a fully functional, production-ready implementation of the PKWare DCL format with comprehensive testing and validation.
