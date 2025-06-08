@@ -14,15 +14,6 @@ permissions:
   security-events: write
 
 jobs:
-  audit:
-    name: Dependency Audit
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: rustsec/audit-check@v2
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   cargo-deny:
     name: Cargo Deny
     runs-on: ubuntu-latest
