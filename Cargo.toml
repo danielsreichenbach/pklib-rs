@@ -1,6 +1,6 @@
 [package]
 name = "pklib"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Daniel S. Reichenbach <daniel@kogito.network>"]
 description = "Pure Rust implementation of PKWare Data Compression Library (DCL) with full PKLib compatibility"

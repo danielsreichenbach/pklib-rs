@@ -28,7 +28,7 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-pklib = "0.1"
+pklib = "0.2"
 ```
 
 ### Basic Usage
