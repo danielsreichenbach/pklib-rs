@@ -71,7 +71,7 @@ pub fn explode_bytes(data: &[u8]) -> Result<Vec<u8>> {
 pub fn explode_mpq_bytes(data: &[u8]) -> Result<Vec<u8>> {
     // After extensive analysis, the data format from MPQ files is:
     // [0x00][0x06][compressed_data...]
-    // 
+    //
     // But wait! Looking at StormLib's explode.c, it expects:
     // [ctype][dsize_bits][bit_buff][compressed_data...]
     // Where:
@@ -85,6 +85,6 @@ pub fn explode_mpq_bytes(data: &[u8]) -> Result<Vec<u8>> {
     //
     // Actually, re-reading the StormLib code, the 0x06 might be interpreted differently.
     // Let's just pass the data through as-is since StormLib does the same.
-    
+
     explode_bytes(data)
 }

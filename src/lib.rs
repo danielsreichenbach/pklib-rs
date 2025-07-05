@@ -78,7 +78,7 @@ pub use common::{
     MAX_REP_LENGTH, MAX_WINDOW_SIZE,
 };
 pub use crc32::{crc32, crc32_pklib};
-pub use explode::{ExplodeReader, explode_mpq_bytes};
+pub use explode::{explode_mpq_bytes, ExplodeReader};
 pub use implode::ImplodeWriter;
 
 // Re-export async types when async feature is enabled

@@ -58,6 +58,14 @@ impl<R: Read> ExplodeReader<R> {
         self.state.extra_bits = 0;
         self.state.in_pos = 3; // Skip header bytes
 
+        // Debug log for MPQ files
+        if self.state.in_buff[0] == 0 && self.state.in_buff[1] == 6 {
+            eprintln!(
+                "PKLib MPQ header detected: ctype={}, dsize_bits={}, bit_buff=0x{:02X}",
+                self.state.in_buff[0], self.state.dsize_bits, self.state.bit_buff
+            );
+        }
+
         // Validate dictionary size
         if self.state.dsize_bits < 4 || self.state.dsize_bits > 6 {
             return Err(PkLibError::InvalidDictionaryBits(
