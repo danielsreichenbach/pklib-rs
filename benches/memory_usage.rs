@@ -65,7 +65,7 @@ fn generate_test_data(size: usize, pattern: &str) -> Vec<u8> {
         "repetitive" => {
             vec![b'A'; size]
         }
-        _ => panic!("Unknown pattern: {}", pattern),
+        _ => panic!("Unknown pattern: {pattern}"),
     }
 }
 
@@ -99,8 +99,7 @@ fn compression_memory_usage(c: &mut Criterion) {
                 DictionarySize::Size4K => "4KB",
             };
 
-            let benchmark_id =
-                BenchmarkId::from_parameter(format!("{}/dict_{}", size_label, dict_str));
+            let benchmark_id = BenchmarkId::from_parameter(format!("{size_label}/dict_{dict_str}"));
 
             group.bench_with_input(benchmark_id, &data, |b, data| {
                 b.iter_custom(|iters| {

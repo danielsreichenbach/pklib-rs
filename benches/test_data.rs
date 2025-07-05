@@ -267,8 +267,7 @@ impl TestDataGenerator {
         let mut user_id = 1;
         while result.len() < size - 100 {
             let insert = format!(
-                "INSERT INTO `users` (`id`, `username`, `email`) VALUES ({}, 'user{}', 'user{}@example.com');\n",
-                user_id, user_id, user_id
+                "INSERT INTO `users` (`id`, `username`, `email`) VALUES ({user_id}, 'user{user_id}', 'user{user_id}@example.com');\n"
             );
 
             result.extend_from_slice(insert.as_bytes());

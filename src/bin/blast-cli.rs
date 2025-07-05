@@ -134,7 +134,7 @@ fn main() {
     };
 
     if let Err(e) = result {
-        eprintln!("Error: {}", e);
+        eprintln!("Error: {e}");
         std::process::exit(1);
     }
 }
@@ -168,7 +168,7 @@ fn compress_file(
             input.display(),
             output.display()
         );
-        println!("Mode: {:?}, Dictionary: {:?}", mode, dict_size);
+        println!("Mode: {mode:?}, Dictionary: {dict_size:?}");
     }
 
     let start_time = Instant::now();
@@ -178,7 +178,7 @@ fn compress_file(
     let input_size = input_data.len();
 
     if verbose {
-        println!("Input size: {} bytes", input_size);
+        println!("Input size: {input_size} bytes");
     }
 
     // Show progress bar for large files
@@ -204,7 +204,7 @@ fn compress_file(
 
     // Compress data
     let compressed_data = implode_bytes(&input_data, mode, dict_size)
-        .map_err(|e| format!("Compression failed: {}", e))?;
+        .map_err(|e| format!("Compression failed: {e}"))?;
 
     if let Some(ref pb) = progress {
         pb.inc(1);
@@ -220,10 +220,10 @@ fn compress_file(
 
     if !quiet {
         println!("✓ Compression successful!");
-        println!("  Input:  {} bytes", input_size);
-        println!("  Output: {} bytes", output_size);
-        println!("  Ratio:  {:.1}%", compression_ratio);
-        println!("  Time:   {:.2?}", compression_time);
+        println!("  Input:  {input_size} bytes");
+        println!("  Output: {output_size} bytes");
+        println!("  Ratio:  {compression_ratio:.1}%");
+        println!("  Time:   {compression_time:.2?}");
 
         if compression_ratio > 100.0 {
             println!("  Note: File expanded during compression (common for small/random data)");
@@ -269,7 +269,7 @@ fn decompress_file(
     let input_size = compressed_data.len();
 
     if verbose {
-        println!("Compressed size: {} bytes", input_size);
+        println!("Compressed size: {input_size} bytes");
     }
 
     // Show progress bar for large files
@@ -295,7 +295,7 @@ fn decompress_file(
 
     // Decompress data
     let decompressed_data =
-        explode_bytes(&compressed_data).map_err(|e| format!("Decompression failed: {}", e))?;
+        explode_bytes(&compressed_data).map_err(|e| format!("Decompression failed: {e}"))?;
 
     if let Some(ref pb) = progress {
         pb.inc(1);
@@ -311,10 +311,10 @@ fn decompress_file(
 
     if !quiet {
         println!("✓ Decompression successful!");
-        println!("  Input:  {} bytes", input_size);
-        println!("  Output: {} bytes", output_size);
-        println!("  Ratio:  {:.1}%", compression_ratio);
-        println!("  Time:   {:.2?}", decompression_time);
+        println!("  Input:  {input_size} bytes");
+        println!("  Output: {output_size} bytes");
+        println!("  Ratio:  {compression_ratio:.1}%");
+        println!("  Time:   {decompression_time:.2?}");
     }
 
     Ok(())
@@ -353,9 +353,9 @@ fn show_file_info(input: &PathBuf, verbose: bool) -> Result<(), Box<dyn std::err
 
     println!("PKLib File Information:");
     println!("  File: {}", input.display());
-    println!("  Size: {} bytes", file_size);
-    println!("  Compression Mode: {} ({})", mode_str, compression_type);
-    println!("  Dictionary Size: {} ({} bits)", dict_size_str, dict_bits);
+    println!("  Size: {file_size} bytes");
+    println!("  Compression Mode: {mode_str} ({compression_type})");
+    println!("  Dictionary Size: {dict_size_str} ({dict_bits} bits)");
 
     if verbose {
         println!(
@@ -369,14 +369,14 @@ fn show_file_info(input: &PathBuf, verbose: bool) -> Result<(), Box<dyn std::err
         Ok(decompressed) => {
             let decompressed_size = decompressed.len();
             let compression_ratio = (file_size as f64 / decompressed_size as f64) * 100.0;
-            println!("  Decompressed Size: {} bytes", decompressed_size);
-            println!("  Compression Ratio: {:.1}%", compression_ratio);
+            println!("  Decompressed Size: {decompressed_size} bytes");
+            println!("  Compression Ratio: {compression_ratio:.1}%");
             println!("  Status: ✓ Valid PKLib file");
         }
         Err(e) => {
             println!("  Status: ✗ Invalid or corrupted PKLib file");
             if verbose {
-                println!("  Error: {}", e);
+                println!("  Error: {e}");
             }
         }
     }

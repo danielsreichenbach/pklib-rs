@@ -12,8 +12,8 @@ const TEST_DATA_DIR: &str = "tests/pklib_compat/test_data";
 
 /// Load test file pairs (compressed and decompressed versions)
 fn load_test_pair(name: &str) -> Result<(Vec<u8>, Vec<u8>), Box<dyn std::error::Error>> {
-    let decomp_path = Path::new(TEST_DATA_DIR).join(format!("{}.decomp", name));
-    let imploded_path = Path::new(TEST_DATA_DIR).join(format!("{}.imploded", name));
+    let decomp_path = Path::new(TEST_DATA_DIR).join(format!("{name}.decomp"));
+    let imploded_path = Path::new(TEST_DATA_DIR).join(format!("{name}.imploded"));
 
     let decompressed = fs::read(&decomp_path)
         .map_err(|e| format!("Failed to read {}: {}", decomp_path.display(), e))?;
@@ -32,18 +32,17 @@ fn test_decompression_compatibility() -> Result<(), Box<dyn std::error::Error>> 
     ];
 
     for test_case in test_cases {
-        println!("Testing decompression: {}", test_case);
+        println!("Testing decompression: {test_case}");
 
         let (expected_decompressed, compressed) = load_test_pair(test_case)?;
 
         // Test our decompression against PKLib compressed data
         let actual_decompressed = explode_bytes(&compressed)
-            .map_err(|e| format!("Failed to decompress {}: {}", test_case, e))?;
+            .map_err(|e| format!("Failed to decompress {test_case}: {e}"))?;
 
         assert_eq!(
             expected_decompressed, actual_decompressed,
-            "Decompression mismatch for test case: {}",
-            test_case
+            "Decompression mismatch for test case: {test_case}"
         );
 
         println!(
@@ -94,25 +93,21 @@ fn test_round_trip_compatibility() -> Result<(), Box<dyn std::error::Error>> {
     ];
 
     for (test_case, mode, dict_size) in test_cases {
-        println!(
-            "Testing round-trip: {} ({:?}, {:?})",
-            test_case, mode, dict_size
-        );
+        println!("Testing round-trip: {test_case} ({mode:?}, {dict_size:?})");
 
         let (original_data, _) = load_test_pair(test_case)?;
 
         // Compress with our implementation
         let compressed = implode_bytes(&original_data, mode, dict_size)
-            .map_err(|e| format!("Failed to compress {}: {}", test_case, e))?;
+            .map_err(|e| format!("Failed to compress {test_case}: {e}"))?;
 
         // Decompress with our implementation
         let decompressed = explode_bytes(&compressed)
-            .map_err(|e| format!("Failed to decompress {}: {}", test_case, e))?;
+            .map_err(|e| format!("Failed to decompress {test_case}: {e}"))?;
 
         assert_eq!(
             original_data, decompressed,
-            "Round-trip failed for test case: {}",
-            test_case
+            "Round-trip failed for test case: {test_case}"
         );
 
         println!(
@@ -176,8 +171,7 @@ fn test_compression_ratios() -> Result<(), Box<dyn std::error::Error>> {
             let decompressed = explode_bytes(&our_compressed)?;
             assert_eq!(
                 original_data, decompressed,
-                "Our compressed data doesn't decompress correctly for {}",
-                test_case
+                "Our compressed data doesn't decompress correctly for {test_case}"
             );
         }
     }
@@ -247,7 +241,7 @@ fn test_compression_modes() -> Result<(), Box<dyn std::error::Error>> {
             DictionarySize::Size2K,
             DictionarySize::Size4K,
         ] {
-            println!("Testing {:?} mode with {:?} dictionary", mode, dict_size);
+            println!("Testing {mode:?} mode with {dict_size:?} dictionary");
 
             let compressed = implode_bytes(test_data, mode, dict_size)?;
             let decompressed = explode_bytes(&compressed)?;

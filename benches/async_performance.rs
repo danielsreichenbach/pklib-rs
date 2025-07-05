@@ -46,7 +46,7 @@ fn async_io_overlap_benchmark(c: &mut Criterion) {
         let data = generate_test_data(*size);
 
         // Synchronous version (current implementation)
-        let sync_id = BenchmarkId::from_parameter(format!("{}_sync", size_label));
+        let sync_id = BenchmarkId::from_parameter(format!("{size_label}_sync"));
         group.throughput(Throughput::Bytes(*size as u64));
         group.bench_with_input(sync_id, &data, |b, data| {
             b.iter(|| {
@@ -63,7 +63,7 @@ fn async_io_overlap_benchmark(c: &mut Criterion) {
         });
 
         // Asynchronous version with overlapped I/O
-        let async_id = BenchmarkId::from_parameter(format!("{}_async_overlap", size_label));
+        let async_id = BenchmarkId::from_parameter(format!("{size_label}_async_overlap"));
         group.throughput(Throughput::Bytes(*size as u64));
         group.bench_with_input(async_id, &data, |b, data| {
             b.iter(|| {
@@ -237,7 +237,7 @@ fn async_memory_efficiency_benchmark(c: &mut Criterion) {
         };
 
         let streaming_id =
-            BenchmarkId::from_parameter(format!("10MB_streaming_{}_chunks", chunk_label));
+            BenchmarkId::from_parameter(format!("10MB_streaming_{chunk_label}_chunks"));
         group.throughput(Throughput::Bytes(file_size as u64));
         group.bench_with_input(streaming_id, &data, |b, data| {
             b.iter(|| {
@@ -340,7 +340,7 @@ fn async_backpressure_benchmark(c: &mut Criterion) {
             _ => "unknown",
         };
 
-        let backpressure_id = BenchmarkId::from_parameter(format!("20MB_file_{}", limit_label));
+        let backpressure_id = BenchmarkId::from_parameter(format!("20MB_file_{limit_label}"));
         group.throughput(Throughput::Bytes(file_size as u64));
         group.bench_with_input(backpressure_id, &data, |b, data| {
             b.iter(|| {

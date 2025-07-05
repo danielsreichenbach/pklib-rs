@@ -35,7 +35,7 @@ fn generate_test_data(size: usize, pattern: &str) -> Vec<u8> {
             data.truncate(size);
             data
         }
-        _ => panic!("Unknown pattern: {}", pattern),
+        _ => panic!("Unknown pattern: {pattern}"),
     }
 }
 
@@ -72,8 +72,7 @@ fn round_trip_throughput(c: &mut Criterion) {
                     };
 
                     let benchmark_id = BenchmarkId::from_parameter(format!(
-                        "{}/{}/{}/{}",
-                        size_label, pattern, mode_str, dict_str
+                        "{size_label}/{pattern}/{mode_str}/{dict_str}"
                     ));
 
                     group.throughput(Throughput::Bytes(*size as u64));

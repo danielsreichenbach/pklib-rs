@@ -9,7 +9,7 @@ fn generate_test_files(count: usize, size_per_file: usize) -> Vec<Vec<u8>> {
     (0..count)
         .map(|i| {
             // Generate slightly different data for each file
-            let base = format!("File {} content: Lorem ipsum dolor sit amet. ", i);
+            let base = format!("File {i} content: Lorem ipsum dolor sit amet. ");
             let mut data = Vec::with_capacity(size_per_file);
             while data.len() < size_per_file {
                 data.extend_from_slice(base.as_bytes());
@@ -151,8 +151,7 @@ fn parallel_chunk_compression(c: &mut Criterion) {
 
             for thread_count in [1, 2, 4, 8].iter() {
                 let benchmark_id = BenchmarkId::from_parameter(format!(
-                    "{}_{}chunks_{}threads",
-                    size_label, chunk_label, thread_count
+                    "{size_label}_{chunk_label}chunks_{thread_count}threads"
                 ));
 
                 group.throughput(Throughput::Bytes(*file_size as u64));
@@ -316,7 +315,7 @@ fn thread_scaling_efficiency(c: &mut Criterion) {
 
     // Test scaling from 1 to 16 threads
     for thread_count in [1, 2, 3, 4, 6, 8, 12, 16].iter() {
-        let benchmark_id = BenchmarkId::from_parameter(format!("{}threads", thread_count));
+        let benchmark_id = BenchmarkId::from_parameter(format!("{thread_count}threads"));
 
         group.throughput(Throughput::Bytes(total_size as u64));
         group.bench_with_input(benchmark_id, &files, |b, files: &Vec<Vec<u8>>| {

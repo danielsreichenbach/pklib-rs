@@ -35,7 +35,7 @@ fn generate_compressed_data(
                 ((x.wrapping_mul(1664525).wrapping_add(1013904223)) % 256) as u8
             })
             .collect(),
-        _ => panic!("Unknown pattern: {}", pattern),
+        _ => panic!("Unknown pattern: {pattern}"),
     };
 
     implode_bytes(&original, mode, dict_size).expect("Compression failed")
@@ -81,8 +81,7 @@ fn decompression_throughput(c: &mut Criterion) {
                     };
 
                     let benchmark_id = BenchmarkId::from_parameter(format!(
-                        "{}/{}/{}/{}",
-                        size_label, pattern, mode_str, dict_str
+                        "{size_label}/{pattern}/{mode_str}/{dict_str}"
                     ));
 
                     // Throughput is based on uncompressed size

@@ -41,7 +41,7 @@ fn test_round_trip() -> Result<(), Box<dyn std::error::Error>> {
         DictionarySize::Size4K,
     ] {
         for mode in [CompressionMode::Binary, CompressionMode::ASCII] {
-            println!("Testing {:?} mode with {:?} dictionary", mode, dict_size);
+            println!("Testing {mode:?} mode with {dict_size:?} dictionary");
 
             // Compress the data
             let compressed = implode_bytes(test_data, mode, dict_size)?;
@@ -53,9 +53,7 @@ fn test_round_trip() -> Result<(), Box<dyn std::error::Error>> {
             assert_eq!(
                 test_data,
                 &decompressed[..],
-                "Round-trip failed for {:?} mode with {:?} dictionary",
-                mode,
-                dict_size
+                "Round-trip failed for {mode:?} mode with {dict_size:?} dictionary"
             );
         }
     }
@@ -191,7 +189,7 @@ fn test_dictionary_sizes() -> Result<(), Box<dyn std::error::Error>> {
         DictionarySize::Size2K,
         DictionarySize::Size4K,
     ] {
-        println!("Testing dictionary size: {:?}", dict_size);
+        println!("Testing dictionary size: {dict_size:?}");
 
         let compressed = implode_bytes(test_data, CompressionMode::Binary, dict_size)?;
         let decompressed = explode_bytes(&compressed)?;

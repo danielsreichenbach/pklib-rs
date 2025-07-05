@@ -38,7 +38,7 @@ fn generate_test_data(size: usize, pattern: &str) -> Vec<u8> {
                 })
                 .collect()
         }
-        _ => panic!("Unknown pattern: {}", pattern),
+        _ => panic!("Unknown pattern: {pattern}"),
     }
 }
 
@@ -81,8 +81,7 @@ fn compression_throughput(c: &mut Criterion) {
                     };
 
                     let benchmark_id = BenchmarkId::from_parameter(format!(
-                        "{}/{}/{}/{}",
-                        size_label, pattern, mode_str, dict_str
+                        "{size_label}/{pattern}/{mode_str}/{dict_str}"
                     ));
 
                     group.throughput(Throughput::Bytes(*size as u64));
@@ -120,7 +119,7 @@ fn compression_ratio(c: &mut Criterion) {
                 };
 
                 let benchmark_id =
-                    BenchmarkId::from_parameter(format!("{}/{}/{}", size, pattern, mode_str));
+                    BenchmarkId::from_parameter(format!("{size}/{pattern}/{mode_str}"));
 
                 group.bench_with_input(benchmark_id, &data, |b, data| {
                     b.iter_batched(
