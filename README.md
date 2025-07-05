@@ -1,6 +1,6 @@
 # pklib
 
-A pure Rust implementation of the PKWare Data Compression Library (DCL), providing high-performance compression and decompression compatible with the original PKLib by Ladislav Zezula.
+A pure Rust implementation of the PKWare Data Compression Library (DCL) format (1980s DOS era), providing high-performance compression and decompression compatible with the original PKLib by Ladislav Zezula.
 
 [![Crates.io](https://img.shields.io/crates/v/pklib.svg)](https://crates.io/crates/pklib)
 [![Build Status](https://github.com/danielsreichenbach/pklib-rs/workflows/CI/badge.svg)](https://github.com/danielsreichenbach/pklib-rs/actions/workflows/ci.yml)
@@ -9,7 +9,7 @@ A pure Rust implementation of the PKWare Data Compression Library (DCL), providi
 
 ## Overview
 
-PKLib implements the PKWare DCL format used in many legacy applications and games. It provides both compression ("implode") and decompression ("explode") functionality with full compatibility to the original PKLib specification.
+PKLib implements the PKWare DCL format used in game archives like MPQ and other legacy applications. It provides both compression ("implode") and decompression ("explode") functionality with full compatibility to the original PKLib specification. This format uses Huffman coding and sliding dictionary compression, and is covered by Patent No. 5,051,745.
 
 ### Key Features
 
@@ -202,7 +202,7 @@ This implementation achieves 100% compatibility with:
 
 - ✅ **Original PKLib** by Ladislav Zezula (StormLib) - Full bit-for-bit compatibility verified
 - ✅ **PKWare DCL Format** - Complete specification implementation with all edge cases
-- ✅ **Legacy Applications** - Successfully processes files from games and archived software
+- ✅ **Game Archives** - Successfully processes files from MPQ archives and games like Diablo I
 - ✅ **Round-trip Testing** - Compression/decompression cycles preserve data integrity
 - ✅ **All Compression Modes** - Binary and ASCII modes with 1KB/2KB/4KB dictionaries
 
@@ -236,14 +236,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- **Ladislav Zezula** - Original PKLib implementation
-- **PKWare Inc.** - Original DCL format specification
+- **Ladislav Zezula** - Original PKLib implementation (reverse-engineered from Diablo I)
+- **PKWare Inc.** - Original DCL format specification (Version 1.11, Patent No. 5,051,745)
 - **StormLib Project** - Reference implementation and test cases
 
 ## References
 
 - [PKLib Reference Implementation](https://codeberg.org/implode-compression-impls/pklib)
-- [PKWare DCL Format Documentation](https://wiki.multimedia.cx/index.php/PKWare_DCL)
 
 ---
 

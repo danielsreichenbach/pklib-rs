@@ -1,7 +1,8 @@
 //! PKLib - Rust implementation of PKWare Data Compression Library
 //!
-//! This crate provides a pure Rust implementation of the PKWare DCL format,
-//! compatible with the original PKLib by Ladislav Zezula.
+//! This crate provides a pure Rust implementation of the PKWare DCL format (1980s DOS era),
+//! compatible with the original PKLib by Ladislav Zezula. This format uses Huffman coding
+//! and sliding dictionary compression, and is used in game archives like MPQ and other legacy applications.
 //!
 //! # Features
 //!
@@ -77,7 +78,7 @@ pub use common::{
     MAX_REP_LENGTH, MAX_WINDOW_SIZE,
 };
 pub use crc32::{crc32, crc32_pklib};
-pub use explode::ExplodeReader;
+pub use explode::{ExplodeReader, explode_mpq_bytes};
 pub use implode::ImplodeWriter;
 
 // Re-export async types when async feature is enabled

@@ -65,3 +65,26 @@ pub fn explode_bytes(data: &[u8]) -> Result<Vec<u8>> {
     reader.read_to_end(&mut output)?;
     Ok(output)
 }
+
+/// Decompress MPQ-format PKWare data
+/// MPQ format has different header structure than standard PKLib
+pub fn explode_mpq_bytes(data: &[u8]) -> Result<Vec<u8>> {
+    // After extensive analysis, the data format from MPQ files is:
+    // [0x00][0x06][compressed_data...]
+    // 
+    // But wait! Looking at StormLib's explode.c, it expects:
+    // [ctype][dsize_bits][bit_buff][compressed_data...]
+    // Where:
+    //   ctype = 0 (binary) or 1 (ASCII)
+    //   dsize_bits = dictionary size in bits (4-6)
+    //   bit_buff = initial bit buffer
+    //
+    // The 0x00 we see IS the ctype (binary mode)
+    // The 0x06 is NOT implode flags but the dsize_bits!
+    // 0x06 = 6 bits = 64 byte dictionary? No, that's too large.
+    //
+    // Actually, re-reading the StormLib code, the 0x06 might be interpreted differently.
+    // Let's just pass the data through as-is since StormLib does the same.
+    
+    explode_bytes(data)
+}

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Corrected documentation to accurately describe PKWare DCL format (1980s DOS era) instead of ZIP IMPLODE/EXPLODE format (1990s)
+- Updated all documentation references to reflect that this implements PKWare Data Compression Library format with Patent No. 5,051,745
+- Clarified that the implementation uses Huffman coding and sliding dictionary compression for game archives like MPQ
+
 ### Future Enhancements
 
 - Performance benchmarks with `criterion`
